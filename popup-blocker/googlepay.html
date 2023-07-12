@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" /> -->
+    <!--
+   <script src="https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/5.1.0/adyen.js"
+     integrity="sha384-MSSWlGReMOvq1c7XJ2+w4ndYk2dGvQIwY5KZZ8FiSsFd8SyySH52G54o0/wxuVT+"
+     crossorigin="anonymous"></script>
+
+<link rel="stylesheet"
+     href="https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/5.1.0/adyen.css"
+     integrity="sha384-XN0c1CgugymoLluXz9O4h5yZilh197E8065oXNe5SgK9TSm6JL2eBdEM7IETwboE"
+     crossorigin="anonymous">-->
+
+    <title>API only Checkout Cart - Checkout Demo</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            <div id="clientKey" class="hidden">test_TD6X2W7M7RBEZHFO5OUQVGTYD47O6HF4</div>
+            <div id="gatewayMerchantId" class="hidden">Microsoft379ECOM</div>
+            <div id="type" class="hidden">googlepay</div>
+            <div id="payment_amount" class="hidden">You're going to pay: 10 USD</div>
+            <!-- <div>Iframe src: https://dotnet-googlepay.azurewebsites.net</div> -->
+            <div id="payment-page">
+                <div id="container">
+                    Choose transaction type:
+                    <select name="tran_type" id="tran_type">
+                        <option value="RECURRING">Recurring (Subs)</option>
+                        <option value="DELAYED">Delayed (Physical goods)</option>
+                        <option value="ONETIME">One Time (Digital goods)</option>
+                    </select>
+                </div>
+                <div>
+                    AuthZStatus:
+                    <select name="authz_status" id="authz_status">
+                        <option value="success">success</option>
+                        <option value="insufficientfund">insufficient fund</option>
+                    </select>
+                </div>
+                <div>
+                    Wait time in ms after place order: <input type="text" id="sleepTime" name="sleepTime" value="10">
+                    <br />
+                </div>
+                <button type="button" onclick="loadFormWithDelay()">Place order</button>
+                <div id="payment-result"></div>
+            </div>
+
+
+            <script>
+                function loadFormWithDelay() {
+                    const sleepTime = document.getElementById('sleepTime').value
+                    setTimeout(loadForm, sleepTime);
+                }
+
+                // Calls your server endpoints
+                function loadForm() {
+                    let frame = null;
+                    if (!document.getElementById("googlePayIframe")) {
+                        frame = document.createElement("iframe");
+                        frame.src = "https://stzhangmsft.github.io/test-samples/html/GooglePayPage.html?showGooglePaybutton=false"
+                        frame.allow = "payment *";
+                        frame.width = 400;
+                        frame.height = 300;
+                        frame.title = "GooglePay Iframe";
+                        frame.id = "googlePayIframe";
+                        frame.addEventListener("load", () => {
+                            frame.contentWindow.postMessage("process_payment",
+                                {
+                                    targetOrigin: "https://stzhangmsft.github.io/test-samples",
+                                    delegate: "payment"
+                                });
+                        });
+                        document.body.appendChild(frame);
+                    }
+                };
+
+                window.addEventListener("message", (event) => {
+                    if (event.data.startsWith("AuthResult:")) {
+                        const paymentResult = event.data.substring("AuthResult:".length);
+                        document.getElementById('payment-result').innerText = paymentResult != null ? JSON.stringify(paymentResult, null, " ") : "null";
+                    }
+                });
+            </script>
+
+        </main>
+    </div>
+
+</body>
+
+</html>
