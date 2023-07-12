@@ -65,7 +65,7 @@
                     let frame = null;
                     if (!document.getElementById("googlePayIframe")) {
                         frame = document.createElement("iframe");
-                        frame.src = "https://stzhangmsft.github.io/test-samples/html/GooglePayPage.html?showGooglePaybutton=false"
+                        frame.src = "https://stzhangmsft.github.io/test-samples/popup-blocker/html/GooglePayPage.html?showGooglePaybutton=false"
                         frame.allow = "payment *";
                         frame.width = 400;
                         frame.height = 300;
@@ -74,7 +74,7 @@
                         frame.addEventListener("load", () => {
                             frame.contentWindow.postMessage("process_payment",
                                 {
-                                    targetOrigin: "https://stzhangmsft.github.io/test-samples",
+                                    targetOrigin: "https://stzhangmsft.github.io/test-samples/popup-blocker/",
                                     delegate: "payment"
                                 });
                         });
